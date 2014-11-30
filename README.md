@@ -18,13 +18,13 @@ Dependencies
 Copying the scripts to a place you like
 =======================================
 
-Put both scripts (awehamster.py and awehamster-gui.py) in some
+Put both scripts (awehamster.py and awehamster.lua) in some
 directory of your preference (for this document, I'm going to assume
 you've put them in $HOME/bin), and give them the execution permission
 bit.
 
-    # cp awehamster.py awehamster-gui.py ~/bin
-    # chmod +x ~/bin/awehamster.py ~/bin/awehamster-gui.py
+    # cp awehamster.py awehamster.lua ~/.config/awesome/plugins
+    # chmod u+x ~/.config/awesome/plugins/awehamster.py
 
 
 Creating a placeholder in Awesome WM
@@ -35,8 +35,8 @@ textbox placeholder, changing dynamically its contents via Dbus. Thus
 you need to create such a placeholder in your wibox. Try adding this
 in your "rc.lua" somewhere near "mytextbox" and "mytextclock" definition.
 
-    myawehamsterbox = wibox.widget.textbox()
-    myawehamsterbox:set_text(' No hamster :( ')
+    myawehamsterbox = require('plugins.awehamster')
+    myawehamsterbox.init({pyscript = '~/.config/awesome/plugins/awehamster.py'})
 
 And now you must add this widget to your wibox. Change its definition
 to look like this:
@@ -52,7 +52,7 @@ to look like this:
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
-    right_layout:add(myawehamsterbox)
+    right_layout:add(myawehamsterbox.label)
     -- On ne peut avoir qu'un systray apparement
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(mytextclock)
@@ -72,11 +72,8 @@ Defining some convenient shortcuts
 I like to use "Mod+s" to stop tracking, and "Mod+a" to launch the gui
 for selecting a new activity. This is what I got in my "rc.lua":
 
-    local new_activity = "~/bin/awehamster-gui.py"
-    local stop_tracking = "/usr/bin/hamster-cli stop"
-    (...)
-    awful.key({ modkey,           }, "a", function () awful.util.spawn(new_activity) end),
-    awful.key({ modkey,           }, "s", function () awful.util.spawn(stop_tracking) end),
+    awful.key({ modkey,           }, "a", myawehamsterbox.add_fact),
+    awful.key({ modkey,           }, "s", myawehamsterbox.stop_fact),
 
 
 Starting it with your session
@@ -84,4 +81,4 @@ Starting it with your session
 
 Add this to the end of your "rc.lua":
 
-    awful.util.spawn_with_shell("~/bin/awehamster.py")
+    awful.util.spawn_with_shell(myawehamsterbox.bin.." daemon")

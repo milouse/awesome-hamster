@@ -112,6 +112,10 @@ class AwesomeHamster(gobject.GObject):
         else:
             return str(number)
 
+    def _set_widget_text(self, text):
+        print text
+        self.ifaceAwesome.Eval('myawehamsterbox.label:set_text(" %s ")' % text)
+
     def _on_facts_changed(self):
         self._refresh()
 
@@ -127,8 +131,7 @@ class AwesomeHamster(gobject.GObject):
             elapsedTime = currentTime - startTime
 
         if startTime == 0 or endTime != 0:
-            print "No activity"
-            self.ifaceAwesome.Eval('myawehamsterbox:set_text(" No activity ")')
+            self._set_widget_text("No activity")
 
         else:
             minutes = elapsedTime / 60
@@ -136,14 +139,13 @@ class AwesomeHamster(gobject.GObject):
             minutes = minutes - (hours * 60)
             activity = (f[4]).encode("utf-8")
             category = (f[6]).encode("utf-8")
-            print "%s@%s %s:%s" % (activity, category, self._pretty_format(hours), self._pretty_format(minutes))
-            self.ifaceAwesome.Eval('myawehamsterbox:set_text(" %s@%s %s:%s ")' % (activity, category, self._pretty_format(hours), self._pretty_format(minutes)))
+            self._set_widget_text("%s@%s %s:%s" % (activity, category, self._pretty_format(hours), self._pretty_format(minutes)))
 
         return True
 
     def shutdown(self, signal, frame):
+        self._set_widget_text(self.old_text)
         print "Kthxbye"
-        self.ifaceAwesome.Eval('myawehamsterbox:set_text(" %s ")' % (self.old_text))
         self.loop.quit()
 
     def run(self):
