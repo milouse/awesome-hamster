@@ -42,7 +42,7 @@ class AwesomeHamster(gobject.GObject):
 
         if startTime == 0 or endTime != 0:
             print "No activity"
-            self.ifaceAwesome.Eval('myawehamsterbox:set_text("No activity")')
+            self.ifaceAwesome.Eval('myawehamsterbox:set_text(" No activity ")')
         else:
             minutes = elapsedTime / 60
             hours = minutes / 60
@@ -50,7 +50,7 @@ class AwesomeHamster(gobject.GObject):
             activity = (f[4]).encode("utf-8")
             category = (f[6]).encode("utf-8")
             print "%s@%s %s:%s" % (activity, category, self._pretty_format(hours), self._pretty_format(minutes))
-            self.ifaceAwesome.Eval('myawehamsterbox:set_text("%s@%s %s:%s")' % (activity, category, self._pretty_format(hours), self._pretty_format(minutes)))
+            self.ifaceAwesome.Eval('myawehamsterbox:set_text(" %s@%s %s:%s ")' % (activity, category, self._pretty_format(hours), self._pretty_format(minutes)))
 
         return True
 
